@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
-@Entity(tableName = "notes_list_names")
-data class CheckLNotesNames(
+@Entity(tableName = "todo_list_names")
+data class TodoLists(
     @PrimaryKey(autoGenerate = true)
     val id: Int?,
 

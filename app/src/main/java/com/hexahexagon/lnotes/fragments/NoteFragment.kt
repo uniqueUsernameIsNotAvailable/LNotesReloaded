@@ -15,14 +15,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.hexahexagon.lnotes.R
 import com.hexahexagon.lnotes.activities.MainApp
 import com.hexahexagon.lnotes.activities.NewNoteActivity
-import com.hexahexagon.lnotes.databinding.FragmentNoteBinding
+import com.hexahexagon.lnotes.databinding.FragNoteBinding
 import com.hexahexagon.lnotes.db.MainViewModel
 import com.hexahexagon.lnotes.db.NoteAdapter
 import com.hexahexagon.lnotes.entities.NoteItem
 
 
 class NoteFragment : BaseFragment(), NoteAdapter.Listener {
-    private lateinit var binding: FragmentNoteBinding
+    private lateinit var binding: FragNoteBinding
     private lateinit var adapter: NoteAdapter
     private lateinit var editLauncher: ActivityResultLauncher<Intent>
 
@@ -44,7 +44,7 @@ class NoteFragment : BaseFragment(), NoteAdapter.Listener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNoteBinding.inflate(inflater, container, false)
+        binding = FragNoteBinding.inflate(inflater, container, false)
         return binding.root
     }
 

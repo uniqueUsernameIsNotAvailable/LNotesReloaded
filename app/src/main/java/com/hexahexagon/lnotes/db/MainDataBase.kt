@@ -5,12 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.hexahexagon.lnotes.entities.CheckLNotesItems
-import com.hexahexagon.lnotes.entities.CheckLNotesNames
+import com.hexahexagon.lnotes.entities.TodoLists
 import com.hexahexagon.lnotes.entities.LibraryItem
 import com.hexahexagon.lnotes.entities.NoteItem
 
 @Database(
-    entities = [CheckLNotesItems::class, CheckLNotesNames::class,
+    entities = [CheckLNotesItems::class, TodoLists::class,
         LibraryItem::class, NoteItem::class], version = 1
 )
 abstract class MainDataBase : RoomDatabase() {

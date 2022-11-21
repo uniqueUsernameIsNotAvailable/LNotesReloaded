@@ -27,7 +27,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@null"
+                android:contentDescription="@string/delete"
                 android:cropToPadding="false"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -49,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:text="TextView"
+                    android:text="@string/dummy"
                     android:textColor="#000000"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -61,7 +64,7 @@
                     android:layout_marginTop="2dp"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:text="TextView"
+                    android:text="@string/dummy"
                     android:textSize="16sp" />
 
                 <LinearLayout
@@ -71,7 +74,8 @@
                     android:background="#000000"
                     android:backgroundTint="#000000"
                     android:orientation="horizontal"
-                    android:paddingLeft="4dp"></LinearLayout>
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"> </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvTime"
@@ -79,9 +83,9 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:text="TextView"
+                    android:text="@string/dummy"
                     android:textSize="12sp"
-                    android:textStyle="italic" />
+                    android:textStyle="italic|bold" />
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

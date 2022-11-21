@@ -21,6 +21,7 @@ import com.hexahexagon.lnotes.databinding.ActivityNewNoteBinding
 import com.hexahexagon.lnotes.entities.NoteItem
 import com.hexahexagon.lnotes.fragments.NoteFragment
 import com.hexahexagon.lnotes.utils.HtmlManager
+import com.hexahexagon.lnotes.utils.TimeManager
 import com.hexahexagon.lnotes.utils.TouchListener
 import java.text.SimpleDateFormat
 import java.util.*
@@ -150,14 +151,9 @@ class NewNoteActivity : AppCompatActivity() {
             null,
             binding.edTitle.text.toString(),
             HtmlManager.toHtml(binding.edDesc.text),
-            getCurrentTime(),
+            TimeManager.getCurrentTime(),
             ""
         )
-    }
-
-    private fun getCurrentTime(): String {
-        val format = SimpleDateFormat("dd.MM.yy - hh:mm", Locale.getDefault())
-        return format.format(Calendar.getInstance().time)
     }
 
     private fun actionBarSettings() {

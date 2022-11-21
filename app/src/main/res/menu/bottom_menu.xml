@@ -8,11 +8,6 @@
         android:title="@string/settings"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/add_note"
-        android:icon="@drawable/ic_note_add"
-        android:title="@string/new_item"
-        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/notes"
@@ -26,5 +21,10 @@
         android:title="@string/todos"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/new_item"
+        android:icon="@drawable/ic_new_item"
+        android:title="@string/new_item"
+        app:showAsAction="ifRoom" />
 
 </menu>
