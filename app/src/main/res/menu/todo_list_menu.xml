@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/delete_list"
+        android:title="Delete list" />
+    <item
+        android:id="@+id/clear_list"
+        android:title="Clear list" />
+    <item
+        android:id="@+id/share_list"
+        android:title="Share list" />
+
+    <item
+        android:id="@+id/new_item"
+        android:icon="@drawable/ic_new_item"
+        android:orderInCategory="2"
+        android:title="New item"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionLayout="@layout/edit_action_layout"/>
+
+
+    <item
+        android:id="@+id/save_item"
+        android:icon="@drawable/ic_save"
+        android:orderInCategory="1"
+        android:title="Save item"
+        app:showAsAction="ifRoom" />
+</menu>

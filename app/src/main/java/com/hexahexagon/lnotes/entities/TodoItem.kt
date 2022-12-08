@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "notes_list_items")
-data class CheckLNotesItems(
+data class TodoItem(
     @PrimaryKey(autoGenerate = true)
     val id: Int?,
 
@@ -25,6 +25,6 @@ data class CheckLNotesItems(
     val listId: Int,
 
     @ColumnInfo(name = "itemType")
-    val itemType: String = "item"
+    val itemType: Int = 0
 
 )

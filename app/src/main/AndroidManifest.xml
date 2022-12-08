@@ -15,9 +15,12 @@
         android:theme="@style/Theme.LNotes"
         tools:targetApi="33">
         <activity
-            android:name=".activities.NewNoteActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:name=".activities.TodoActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.NewNoteActivity"
+            android:exported="false"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activities.MainActivity"
             android:exported="true">

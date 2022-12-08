@@ -39,6 +39,7 @@ class NewNoteActivity : AppCompatActivity() {
         getNote()
         onClickColorPicker()
         //actionMenuCallback()
+        //macrosParser
     }
 
     private fun init() {
