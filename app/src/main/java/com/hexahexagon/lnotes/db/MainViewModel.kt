@@ -12,7 +12,7 @@ class MainViewModel(dataBase: MainDataBase) : ViewModel() {
     val allNotes: LiveData<List<NoteItem>> = dao.getAllNotes().asLiveData()
     val allTodoListNames: LiveData<List<TodoList>> = dao.getAllTodoLists().asLiveData()
 
-    fun getAllItemsFromList(listId:Int):LiveData<List<TodoItem>>{
+    fun getAllItemsFromList(listId: Int): LiveData<List<TodoItem>> {
         return dao.getAllTodoItems(listId).asLiveData()
     }
 
@@ -32,6 +32,10 @@ class MainViewModel(dataBase: MainDataBase) : ViewModel() {
         dao.updateNote(note)
     }
 
+    fun updateTodo(todo: TodoItem) = viewModelScope.launch {
+        dao.updateTodo(todo)
+    }
+
     fun updateTodoListName(todoList: TodoList) = viewModelScope.launch {
         dao.updateTodoList(todoList)
     }
@@ -40,8 +44,9 @@ class MainViewModel(dataBase: MainDataBase) : ViewModel() {
         dao.deleteNote(id)
     }
 
-    fun deleteTodoListName(id: Int) = viewModelScope.launch {
+    fun deleteTodoList(id: Int) = viewModelScope.launch {
         dao.deleteTodoList(id)
+        dao.deleteTodoByListId(id)
     }
 
     class MainViewModelFactory(val dataBase: MainDataBase) : ViewModelProvider.Factory {

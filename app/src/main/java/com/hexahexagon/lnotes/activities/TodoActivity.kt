@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.activity.viewModels
@@ -12,7 +13,9 @@ import com.hexahexagon.lnotes.R
 import com.hexahexagon.lnotes.databinding.ActivityTodoBinding
 import com.hexahexagon.lnotes.db.MainViewModel
 import com.hexahexagon.lnotes.db.TodoItemAdapter
+import com.hexahexagon.lnotes.db.TodoItemAdapter.Companion.CHECK
 import com.hexahexagon.lnotes.db.TodoListAdapter
+import com.hexahexagon.lnotes.dialogs.UpdateTodoDialog
 import com.hexahexagon.lnotes.entities.TodoItem
 import com.hexahexagon.lnotes.entities.TodoList
 
@@ -61,8 +64,8 @@ class TodoActivity : AppCompatActivity(), TodoItemAdapter.Listener {
         val item = TodoItem(
             null,
             edItem?.text.toString(),
-            null,
-            0,
+            "",
+            false,
             todoList?.id!!,
             0
         )
@@ -71,9 +74,13 @@ class TodoActivity : AppCompatActivity(), TodoItemAdapter.Listener {
     }
 
     private fun listItemObserver() {
-        mainViewModel.getAllItemsFromList(todoList?.id!!).observe(this, {
+        mainViewModel.getAllItemsFromList(todoList?.id!!).observe(this) {
             adapter?.submitList(it)
-        })
+            binding.tvEmpty.visibility = if (it.isEmpty()) {
+                View.VISIBLE
+            } else
+                View.GONE
+        }
     }
 
     private fun initRcView() = with(binding) {
@@ -101,22 +108,28 @@ class TodoActivity : AppCompatActivity(), TodoItemAdapter.Listener {
 
     private fun init() {
         todoList = intent.getSerializableExtra(TODO_LIST) as TodoList
-        binding.tvTest.text = todoList?.name
     }
 
     companion object {
         const val TODO_LIST = "todo_list_names"
     }
 
-    override fun deleteItem(id: Int) {
+
+    override fun onClickItem(todoItem: TodoItem, state: Int) {
+        when (state) {
+            TodoItemAdapter.CHECK -> mainViewModel.updateTodo(todoItem)
+            TodoItemAdapter.EDIT -> editTodo(todoItem)
+        }
 
     }
 
-    override fun editItem(todoNameItem: TodoList) {
+    private fun editTodo(item: TodoItem) {
+        UpdateTodoDialog.showDialog(this, item, object : UpdateTodoDialog.Listener {
+            override fun onClick(item: TodoItem) {
+                mainViewModel.updateTodo(item)
+            }
 
+        })
     }
 
-    override fun onClickItem(todoNameItem: TodoList) {
-
-    }
 }

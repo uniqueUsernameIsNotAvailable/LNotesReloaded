@@ -25,6 +25,9 @@ interface Dao {
     suspend fun updateNote(note: NoteItem)
 
     @Update
+    suspend fun updateTodo(todo: TodoItem)
+
+    @Update
     suspend fun updateTodoList(todoList: TodoList)
 
     @Query("DELETE FROM note_list WHERE id IS :id")
@@ -32,6 +35,9 @@ interface Dao {
 
     @Query("DELETE FROM todo_list_names WHERE id IS :id")
     suspend fun deleteTodoList(id: Int)
+
+    @Query("DELETE FROM notes_list_items WHERE listID LIKE :listId ")
+    suspend fun deleteTodoByListId(listId: Int)
 
     @Query("SELECT * FROM note_list")
     fun getAllNotes(): Flow<List<NoteItem>>

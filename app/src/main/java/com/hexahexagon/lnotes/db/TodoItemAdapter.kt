@@ -1,15 +1,16 @@
 package com.hexahexagon.lnotes.db
 
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.hexahexagon.lnotes.R
 import com.hexahexagon.lnotes.databinding.TodoItemBinding
 import com.hexahexagon.lnotes.entities.TodoItem
-import com.hexahexagon.lnotes.entities.TodoList
 
 class TodoItemAdapter(private val listener: Listener) :
     ListAdapter<TodoItem, TodoItemAdapter.ItemHolder>(ItemComparator()) {
@@ -42,14 +43,50 @@ class TodoItemAdapter(private val listener: Listener) :
             val binding = TodoItemBinding.bind(view)
             binding.apply {
                 tvTitle.text = todoItem.name
+                tvInfo.text = todoItem.itemInfo
+                tvInfo.visibility = getVisibility(todoItem)
+                cbCheck.isChecked = todoItem.itemChecked
+                setCheckedAppearance(binding)
+                cbCheck.setOnClickListener {
+                    listener.onClickItem(todoItem.copy(itemChecked = cbCheck.isChecked), CHECK)
+                }
+                imUpd.setOnClickListener {
+                    listener.onClickItem(todoItem, EDIT)
+                }
             }
-
         }
 
         fun setLibData(todoItem: TodoItem, listener: Listener) {
 
         }
 
+        private fun setCheckedAppearance(binding: TodoItemBinding) {
+            binding.apply {
+                if (cbCheck.isChecked) {
+                    tvTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                    tvTitle.setTextColor(ContextCompat.getColor(binding.root.context, R.color.gray))
+                    tvInfo.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                    tvInfo.setTextColor(ContextCompat.getColor(binding.root.context, R.color.gray))
+                } else {
+                    tvTitle.paintFlags = Paint.ANTI_ALIAS_FLAG
+                    tvTitle.setTextColor(
+                        ContextCompat.getColor(
+                            binding.root.context,
+                            R.color.black
+                        )
+                    )
+                    tvInfo.paintFlags = Paint.ANTI_ALIAS_FLAG
+                    tvInfo.setTextColor(ContextCompat.getColor(binding.root.context, R.color.black))
+                }
+            }
+        }
+
+        private fun getVisibility(todoItem: TodoItem): Int {
+            return if (todoItem.itemInfo.isNullOrEmpty()) {
+                View.GONE
+            } else
+                View.VISIBLE
+        }
 
         companion object {
             fun createTodoItem(parent: ViewGroup): ItemHolder {
@@ -81,8 +118,11 @@ class TodoItemAdapter(private val listener: Listener) :
     }
 
     interface Listener {
-        fun deleteItem(id: Int)
-        fun editItem(todoNameItem: TodoList)
-        fun onClickItem(todoNameItem: TodoList)
+        fun onClickItem(todoItem: TodoItem, state: Int)
+    }
+
+    companion object{
+        const val EDIT = 0
+        const val CHECK = 1
     }
 }
