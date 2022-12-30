@@ -52,6 +52,7 @@
                 android:id="@+id/btnSave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="60dip"
                 android:text="@string/saveNote" />
 
         </LinearLayout>

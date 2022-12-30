@@ -1,6 +1,7 @@
 package com.hexahexagon.lnotes.db
 
 import androidx.lifecycle.*
+import com.hexahexagon.lnotes.entities.LibraryItem
 import com.hexahexagon.lnotes.entities.NoteItem
 import com.hexahexagon.lnotes.entities.TodoItem
 import com.hexahexagon.lnotes.entities.TodoList
@@ -9,11 +10,16 @@ import java.lang.IllegalArgumentException
 
 class MainViewModel(dataBase: MainDataBase) : ViewModel() {
     val dao = dataBase.getDao()
+    val libItems = MutableLiveData<List<LibraryItem>>()
     val allNotes: LiveData<List<NoteItem>> = dao.getAllNotes().asLiveData()
     val allTodoListNames: LiveData<List<TodoList>> = dao.getAllTodoLists().asLiveData()
 
     fun getAllItemsFromList(listId: Int): LiveData<List<TodoItem>> {
         return dao.getAllTodoItems(listId).asLiveData()
+    }
+
+    fun getLibItems(name: String) = viewModelScope.launch {
+        libItems.postValue(dao.getAllLibItems(name))
     }
 
     fun insertNote(note: NoteItem) = viewModelScope.launch {
@@ -26,6 +32,7 @@ class MainViewModel(dataBase: MainDataBase) : ViewModel() {
 
     fun insertTodo(todo: TodoItem) = viewModelScope.launch {
         dao.insertTodo(todo)
+        if (!doesLibItemExist(todo.name)) dao.insertLibItem(LibraryItem(null, todo.name))
     }
 
     fun updateNote(note: NoteItem) = viewModelScope.launch {
@@ -40,13 +47,25 @@ class MainViewModel(dataBase: MainDataBase) : ViewModel() {
         dao.updateTodoList(todoList)
     }
 
+    fun updateLibItem(libraryItem: LibraryItem) = viewModelScope.launch {
+        dao.updateLibItem(libraryItem)
+    }
+
     fun deleteNote(id: Int) = viewModelScope.launch {
         dao.deleteNote(id)
     }
 
-    fun deleteTodoList(id: Int) = viewModelScope.launch {
-        dao.deleteTodoList(id)
+    fun deleteTodoList(id: Int, deleteList: Boolean) = viewModelScope.launch {
+        if (deleteList) dao.deleteTodoList(id)
         dao.deleteTodoByListId(id)
+    }
+
+    fun deleteLibItem(id: Int) = viewModelScope.launch {
+        dao.deleteLibItem(id)
+    }
+
+    suspend fun doesLibItemExist(name: String): Boolean {
+        return dao.getAllLibItems(name).isNotEmpty()
     }
 
     class MainViewModelFactory(val dataBase: MainDataBase) : ViewModelProvider.Factory {

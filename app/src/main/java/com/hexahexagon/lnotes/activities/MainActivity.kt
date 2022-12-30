@@ -1,5 +1,6 @@
 package com.hexahexagon.lnotes.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import com.hexahexagon.lnotes.dialogs.NewListDialog
 import com.hexahexagon.lnotes.fragments.FragmentManager
 import com.hexahexagon.lnotes.fragments.NoteFragment
 import com.hexahexagon.lnotes.fragments.TodoListsFragment
+import com.hexahexagon.lnotes.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity(), NewListDialog.Listener {
     lateinit var binding: ActivityMainBinding
@@ -25,19 +27,16 @@ class MainActivity : AppCompatActivity(), NewListDialog.Listener {
         binding.bNav.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.settings -> {
-                    Log.d("MyLog", "CLICKED_SETTINGS")
+                    startActivity(Intent(this, SettingsActivity::class.java))
                 }
                 R.id.notes -> {
                     FragmentManager.setFragment(NoteFragment.newInstance(), this)
-                    Log.d("MyLog", "CLICKED_NOTES")
                 }
                 R.id.todos -> {
                     FragmentManager.setFragment(TodoListsFragment.newInstance(), this)
-                    Log.d("MyLog", "CLICKED_TODOS")
                 }
                 R.id.create_item -> {
                     FragmentManager.currentFragment?.onClickNew()
-                    Log.d("MyLog", "CLICKED_NEW")
                 }
 
             }
@@ -46,6 +45,5 @@ class MainActivity : AppCompatActivity(), NewListDialog.Listener {
     }
 
     override fun onClick(name: String) {
-        Log.d("MyLog", "Name $name")
     }
 }

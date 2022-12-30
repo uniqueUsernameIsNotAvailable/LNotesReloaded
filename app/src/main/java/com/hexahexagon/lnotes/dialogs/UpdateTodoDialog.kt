@@ -3,6 +3,7 @@ package com.hexahexagon.lnotes.dialogs
 import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import com.hexahexagon.lnotes.R
 import com.hexahexagon.lnotes.databinding.EditTodoDialogBinding
 import com.hexahexagon.lnotes.databinding.NewListDialogBinding
@@ -18,6 +19,7 @@ object UpdateTodoDialog {
         binding.apply {
             edName.setText(item.name)
             edInfo.setText(item.itemInfo)
+            if (item.itemType == 1) edInfo.visibility = View.GONE
             btnSave.setOnClickListener {
                 if (edName.text.toString().isNotEmpty()) {
                     listener.onClick(item.copy(

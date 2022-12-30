@@ -2,6 +2,7 @@ package com.hexahexagon.lnotes.activities
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,8 +15,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.core.text.getSpans
+import androidx.preference.PreferenceManager
 import com.hexahexagon.lnotes.R
 import com.hexahexagon.lnotes.databinding.ActivityNewNoteBinding
 import com.hexahexagon.lnotes.entities.NoteItem
@@ -29,6 +32,7 @@ import java.util.*
 class NewNoteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityNewNoteBinding
     private var note: NoteItem? = null
+    private var pref: SharedPreferences? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -36,6 +40,7 @@ class NewNoteActivity : AppCompatActivity() {
         setContentView(binding.root)
         actionBarSettings()
         init()
+        setTextSize()
         getNote()
         onClickColorPicker()
         //actionMenuCallback()
@@ -44,6 +49,7 @@ class NewNoteActivity : AppCompatActivity() {
 
     private fun init() {
         binding.colorPicker.setOnTouchListener(TouchListener())
+        pref = PreferenceManager.getDefaultSharedPreferences(this)
     }
 
     private fun getNote() {
@@ -205,5 +211,14 @@ class NewNoteActivity : AppCompatActivity() {
             }
         }
         binding.edDesc.customSelectionActionModeCallback = actionCallback
+    }
+
+    private fun setTextSize() = with(binding) {
+        edTitle.setTextSize(pref?.getString("size_heading", "20"))
+        edDesc.setTextSize(pref?.getString("size_content", "14"))
+    }
+
+    private fun EditText.setTextSize(size: String?) {
+        if (size != null) this.textSize = size.toFloat()
     }
 }

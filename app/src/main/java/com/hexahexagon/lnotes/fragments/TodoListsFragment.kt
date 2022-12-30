@@ -87,7 +87,7 @@ class TodoListsFragment : BaseFragment(), TodoListAdapter.Listener {
     override fun deleteItem(id: Int) {
         DeleteDialog.showDialog(context as AppCompatActivity, object : DeleteDialog.Listener {
             override fun onClick() {
-                mainViewModel.deleteTodoList(id)
+                mainViewModel.deleteTodoList(id, true)
             }
         })
     }

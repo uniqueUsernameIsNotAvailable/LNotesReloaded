@@ -1,23 +1,25 @@
 package com.hexahexagon.lnotes.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import android.widget.LinearLayout
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hexahexagon.lnotes.R
 import com.hexahexagon.lnotes.databinding.ActivityTodoBinding
 import com.hexahexagon.lnotes.db.MainViewModel
 import com.hexahexagon.lnotes.db.TodoItemAdapter
-import com.hexahexagon.lnotes.db.TodoItemAdapter.Companion.CHECK
-import com.hexahexagon.lnotes.db.TodoListAdapter
 import com.hexahexagon.lnotes.dialogs.UpdateTodoDialog
+import com.hexahexagon.lnotes.entities.LibraryItem
 import com.hexahexagon.lnotes.entities.TodoItem
 import com.hexahexagon.lnotes.entities.TodoList
+import com.hexahexagon.lnotes.utils.ShareHelper
 
 
 class TodoActivity : AppCompatActivity(), TodoItemAdapter.Listener {
@@ -26,6 +28,7 @@ class TodoActivity : AppCompatActivity(), TodoItemAdapter.Listener {
     private lateinit var saveItem: MenuItem
     private var edItem: EditText? = null
     private var adapter: TodoItemAdapter? = null
+    private lateinit var textWatcher: TextWatcher
 
     private val mainViewModel: MainViewModel by viewModels {
         MainViewModel.MainViewModelFactory((applicationContext as MainApp).database)
@@ -47,23 +50,60 @@ class TodoActivity : AppCompatActivity(), TodoItemAdapter.Listener {
         edItem = newItem.actionView.findViewById(R.id.edNewTodoItem) as EditText
         newItem.setOnActionExpandListener(expandActionMenu())
         saveItem.isVisible = false
+        textWatcher = textWatcher()
 
         return true
     }
 
+    private fun textWatcher(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                mainViewModel.getLibItems("%$p0%")
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.save_item)
-            addNewTodoItem()
+        when (item.itemId) {
+            R.id.save_item -> {
+                addNewTodoItem(edItem?.text.toString())
+            }
+            R.id.delete_list -> {
+                mainViewModel.deleteTodoList(todoList?.id!!, true)
+                finish()
+            }
+            R.id.clear_list -> {
+                mainViewModel.deleteTodoList(todoList?.id!!, false)
+            }
+            R.id.share_list -> {
+                startActivity(
+                    Intent.createChooser(
+                        ShareHelper.shareTodoList(
+                            adapter?.currentList!!,
+                            todoList?.name!!
+                        ), "Share with"
+                    )
+                )
+            }
+        }
 
         return super.onOptionsItemSelected(item)
     }
 
-    private fun addNewTodoItem() {
-        if (edItem?.text.toString().isEmpty()) return
+    private fun addNewTodoItem(name: String) {
+        if (name.isEmpty()) return
 
         val item = TodoItem(
             null,
-            edItem?.text.toString(),
+            name,
             "",
             false,
             todoList?.id!!,
@@ -83,6 +123,21 @@ class TodoActivity : AppCompatActivity(), TodoItemAdapter.Listener {
         }
     }
 
+    private fun libItemObserver() {
+        mainViewModel.libItems.observe(this) {
+            val tmpTodo = ArrayList<TodoItem>()
+            it.forEach { item ->
+                val todoItem = TodoItem(item.id, item.name, "", false, 0, 1)
+                tmpTodo.add(todoItem)
+            }
+            adapter?.submitList(tmpTodo)
+            binding.tvEmpty.visibility = if (it.isEmpty()) {
+                View.VISIBLE
+            } else
+                View.GONE
+        }
+    }
+
     private fun initRcView() = with(binding) {
         adapter = TodoItemAdapter(this@TodoActivity)
         rcView.layoutManager = LinearLayoutManager(this@TodoActivity)
@@ -94,12 +149,20 @@ class TodoActivity : AppCompatActivity(), TodoItemAdapter.Listener {
         return object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
                 saveItem.isVisible = true
+                edItem?.addTextChangedListener(textWatcher)
+                libItemObserver()
+                mainViewModel.getAllItemsFromList(todoList?.id!!).removeObservers(this@TodoActivity)
+                mainViewModel.getLibItems("%%")
                 return true
             }
 
             override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
                 saveItem.isVisible = false
+                edItem?.removeTextChangedListener(textWatcher)
                 invalidateOptionsMenu()
+                mainViewModel.libItems.removeObservers(this@TodoActivity)
+                edItem?.setText("")
+                listItemObserver()
                 return true
             }
 
@@ -119,6 +182,12 @@ class TodoActivity : AppCompatActivity(), TodoItemAdapter.Listener {
         when (state) {
             TodoItemAdapter.CHECK -> mainViewModel.updateTodo(todoItem)
             TodoItemAdapter.EDIT -> editTodo(todoItem)
+            TodoItemAdapter.EDIT_LIB_ITEM -> editLibItem(todoItem)
+            TodoItemAdapter.DELETE_LIB_ITEM -> {
+                mainViewModel.deleteLibItem(todoItem.id!!)
+                mainViewModel.getLibItems("%${edItem?.text.toString()}%")
+            }
+            TodoItemAdapter.INSERT -> addNewTodoItem(todoItem.name)
         }
 
     }
@@ -132,4 +201,30 @@ class TodoActivity : AppCompatActivity(), TodoItemAdapter.Listener {
         })
     }
 
+    private fun editLibItem(item: TodoItem) {
+        UpdateTodoDialog.showDialog(this, item, object : UpdateTodoDialog.Listener {
+            override fun onClick(item: TodoItem) {
+                mainViewModel.updateLibItem(LibraryItem(item.id, item.name))
+                mainViewModel.getLibItems("%${edItem?.text.toString()}%")
+            }
+
+        })
+    }
+
+    private fun saveChecksCount() {
+        var checkedCounter = 0
+        adapter?.currentList?.forEach {
+            if (it.itemChecked) checkedCounter++
+        }
+        val tmpTodoList = todoList?.copy(
+            itemsCounter = adapter?.itemCount!!,
+            checkedItemsCounter = checkedCounter
+        )
+        mainViewModel.updateTodoListName(tmpTodoList!!)
+    }
+
+    override fun onBackPressed() {
+        saveChecksCount()
+        super.onBackPressed()
+    }
 }

@@ -1,8 +1,11 @@
 package com.hexahexagon.lnotes.db
 
+import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -29,11 +32,27 @@ class TodoListAdapter(private val listener: Listener) :
             tvTitle.text = todoNameItem.name
             tvTime.text = todoNameItem.time
 
+            val countText = "${todoNameItem.checkedItemsCounter}/${todoNameItem.itemsCounter}"
+            tvCounter.text = countText
+
+            pBar.max = todoNameItem.itemsCounter
+            pBar.progress = todoNameItem.checkedItemsCounter
+            val colorState = ColorStateList.valueOf(getPBColor(todoNameItem, binding.root.context))
+            pBar.progressTintList = colorState
+            cvCount.backgroundTintList = colorState
+
             itemView.setOnClickListener { listener.onClickItem(todoNameItem) }
 
             btnDel.setOnClickListener { listener.deleteItem(todoNameItem.id!!) }
 
             btnEdit.setOnClickListener { listener.editItem(todoNameItem) }
+        }
+
+        private fun getPBColor(item: TodoList, context: Context): Int {
+            return if (item.checkedItemsCounter == item.itemsCounter) {
+                ContextCompat.getColor(context, R.color.green)
+            } else
+                ContextCompat.getColor(context, R.color.red)
         }
 
         companion object {

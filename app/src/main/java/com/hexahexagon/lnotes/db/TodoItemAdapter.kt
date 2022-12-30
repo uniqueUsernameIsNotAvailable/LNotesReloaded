@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.hexahexagon.lnotes.R
+import com.hexahexagon.lnotes.databinding.LibraryItemBinding
 import com.hexahexagon.lnotes.databinding.TodoItemBinding
 import com.hexahexagon.lnotes.entities.TodoItem
 
@@ -37,7 +38,6 @@ class TodoItemAdapter(private val listener: Listener) :
 
 
     class ItemHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        private val binding = TodoItemBinding.bind(view)
 
         fun setItemData(todoItem: TodoItem, listener: Listener) {
             val binding = TodoItemBinding.bind(view)
@@ -57,7 +57,15 @@ class TodoItemAdapter(private val listener: Listener) :
         }
 
         fun setLibData(todoItem: TodoItem, listener: Listener) {
-
+            val binding = LibraryItemBinding.bind(view)
+            binding.apply {
+                tvTitle.text = todoItem.name
+                imUpd.setOnClickListener {
+                    listener.onClickItem(todoItem, EDIT_LIB_ITEM)
+                }
+                imDel.setOnClickListener { listener.onClickItem(todoItem, DELETE_LIB_ITEM) }
+                itemView.setOnClickListener{listener.onClickItem(todoItem, INSERT)}
+            }
         }
 
         private fun setCheckedAppearance(binding: TodoItemBinding) {
@@ -99,7 +107,7 @@ class TodoItemAdapter(private val listener: Listener) :
             fun createLibItem(parent: ViewGroup): ItemHolder {
                 return ItemHolder(
                     LayoutInflater.from(parent.context)
-                        .inflate(R.layout.todo_list, parent, false)
+                        .inflate(R.layout.library_item, parent, false)
                 )
             }
         }
@@ -121,8 +129,11 @@ class TodoItemAdapter(private val listener: Listener) :
         fun onClickItem(todoItem: TodoItem, state: Int)
     }
 
-    companion object{
+    companion object {
         const val EDIT = 0
         const val CHECK = 1
+        const val EDIT_LIB_ITEM = 2
+        const val DELETE_LIB_ITEM = 3
+        const val INSERT = 4
     }
 }

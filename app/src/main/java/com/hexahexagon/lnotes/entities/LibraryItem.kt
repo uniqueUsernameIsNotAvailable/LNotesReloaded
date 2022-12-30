@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "library")
 data class LibraryItem(
     @PrimaryKey(autoGenerate = true)
-    val id:Int?,
+    val id: Int?,
 
     @ColumnInfo(name = "name")
-    val name:String
+    val name: String
 )

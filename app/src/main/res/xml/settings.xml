@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="@string/general">
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/note_style_array"
+            android:entryValues="@array/note_style_values"
+            android:icon="@drawable/ic_brush"
+            android:key="note_style_key"
+            app:useSimpleSummaryProvider="true"
+            android:title="@string/styleChooser" />
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/time_format_array"
+            android:entryValues="@array/time_format_values"
+            android:icon="@drawable/ic_clock"
+            android:key="time_format_key"
+            app:useSimpleSummaryProvider="true"
+            android:title="@string/formatChooser" />
+
+        <Preference
+            android:icon="@drawable/ic_buy"
+            android:summary="@string/buyPremium_summary"
+            android:title="@string/buyPremium" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/visuals">
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/note_theme_array"
+            android:entryValues="@array/note_theme_values"
+            android:icon="@drawable/ic_theme"
+            android:key="theme_key"
+            app:useSimpleSummaryProvider="true"
+            android:title="@string/themeChooser" />
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/title_size_array"
+            android:entryValues="@array/title_size_values"
+            android:key="size_heading"
+            app:useSimpleSummaryProvider="true"
+            android:title="@string/sizeChooserH" />
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/content_size_array"
+            android:entryValues="@array/content_size_values"
+            android:key="size_content"
+            app:useSimpleSummaryProvider="true"
+            android:title="@string/sizeChooserC" />
+    </PreferenceCategory>
+</PreferenceScreen>

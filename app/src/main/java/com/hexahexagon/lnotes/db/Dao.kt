@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.hexahexagon.lnotes.entities.LibraryItem
 import com.hexahexagon.lnotes.entities.NoteItem
 import com.hexahexagon.lnotes.entities.TodoItem
 import com.hexahexagon.lnotes.entities.TodoList
@@ -21,6 +22,10 @@ interface Dao {
     @Insert
     suspend fun insertTodoList(name: TodoList)
 
+    @Insert
+    suspend fun insertLibItem(libraryItem: LibraryItem)
+
+
     @Update
     suspend fun updateNote(note: NoteItem)
 
@@ -30,14 +35,22 @@ interface Dao {
     @Update
     suspend fun updateTodoList(todoList: TodoList)
 
+    @Update
+    suspend fun updateLibItem(libraryItem: LibraryItem)
+
+
     @Query("DELETE FROM note_list WHERE id IS :id")
     suspend fun deleteNote(id: Int)
 
     @Query("DELETE FROM todo_list_names WHERE id IS :id")
     suspend fun deleteTodoList(id: Int)
 
-    @Query("DELETE FROM notes_list_items WHERE listID LIKE :listId ")
+    @Query("DELETE FROM notes_list_items WHERE listID LIKE :listId")
     suspend fun deleteTodoByListId(listId: Int)
+
+    @Query("DELETE FROM library WHERE id IS :id")
+    suspend fun deleteLibItem(id: Int)
+
 
     @Query("SELECT * FROM note_list")
     fun getAllNotes(): Flow<List<NoteItem>>
@@ -45,6 +58,9 @@ interface Dao {
     @Query("SELECT * FROM todo_list_names")
     fun getAllTodoLists(): Flow<List<TodoList>>
 
-    @Query("SELECT * FROM notes_list_items WHERE listID LIKE :listId ")
+    @Query("SELECT * FROM notes_list_items WHERE listID LIKE :listId")
     fun getAllTodoItems(listId: Int): Flow<List<TodoItem>>
+
+    @Query("SELECT * FROM library WHERE name LIKE :name")
+    suspend fun getAllLibItems(name: String): List<LibraryItem>
 }
